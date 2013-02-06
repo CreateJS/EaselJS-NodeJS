@@ -1,0 +1,11 @@
+{
+	"name": "node-easel-examples-requirements",
+	"description": "EaselJS port to node, using node-canvas.",
+	"version": "0.1.0",
+	"author": "Wes Gorgichuk <wes@gskinner.com>",
+	"keywords": ["canvas", "graphic", "graphics", "image", "images", "easel"],
+	"dependencies": {
+		"express": "3.x"
+	},
+	"engines": { "node": ">= 0.8.0 && < 1.0.0" }
+}

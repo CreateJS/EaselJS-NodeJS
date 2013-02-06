@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+
+    <script type="text/javascript" src="easeljs/utils/UID.js"></script>
+    <script type="text/javascript" src="easeljs/events/EventDispatcher.js"></script>
+    <script type="text/javascript" src="easeljs/events/MouseEvent.js"></script>
+    <script type="text/javascript" src="easeljs/geom/Matrix2D.js"></script>
+    <script type="text/javascript" src="easeljs/geom/Rectangle.js"></script>
+    <script type="text/javascript" src="easeljs/filters/Filter.js"></script>
+    <script type="text/javascript" src="easeljs/filters/BoxBlurFilter.js"></script>
+    <script type="text/javascript" src="easeljs/display/DisplayObject.js"></script>
+    <script type="text/javascript" src="easeljs/display/Container.js"></script>
+    <script type="text/javascript" src="easeljs/display/Text.js"></script>
+    <script type="text/javascript" src="easeljs/display/Graphics.js"></script>
+    <script type="text/javascript" src="easeljs/display/Shape.js"></script>
+    <script type="text/javascript" src="easeljs/display/Stage.js"></script>
+    <script type="text/javascript" src="com/gskinner/utils/Rnd.js"></script>
+
+    <script type="text/javascript">
+        var canvas, stage, ctx;
+
+        var Captcha = function () { }
+
+        function create() {
+            stage.clear();
+            stage.removeAllChildren();
+
+            var usedCharacters = [];
+
+            var characters = 'abcdefjhjklmnpqrxtuvwxyz23456789'.split('');
+
+            var length = 9;
+            var lastX = 15;
+            while (length--) {
+                var char = characters[Rnd.random() * characters.length | 0];
+                usedCharacters.push(char);
+
+                var t = new createjs.Text(char, "25px Verdana", "#000");
+                t.textBaseline = "top";
+
+                var w = 20;//ctx.measureText(char).width;
+                var h = 25;//t.getMeasuredLineHeight();
+
+                t.x = lastX;
+                t.y = Rnd.random() * (canvas.height - h);
+                t.skewX = Rnd.random() * w * 2;
+                t.skewY = Rnd.random() * h * 2;
+                stage.addChild(t);
+
+                lastX += w + (Rnd.random() * w);
+            }
+
+            var g = new createjs.Graphics();
+            g.initialize(ctx);
+
+            var shape = new createjs.Shape(g);
+            g.setStrokeStyle(1).beginStroke("#00acc");
+
+            length = 10;
+            while (length--) {
+                g.lineTo(Rnd.random() * canvas.width, Rnd.random() * canvas.height);
+                g.moveTo(Rnd.random() * canvas.width, Rnd.random() * canvas.height);
+            }
+
+            var g2 = new createjs.Graphics();
+            g2.initialize(ctx);
+
+            var shape2 = new createjs.Shape(g2);
+            length = 40;
+            while (length--) {
+                g2.setStrokeStyle(0).beginFill('#' + (Rnd.random() * 0xffffff | 0)).drawCircle(Rnd.random() * canvas.width, Rnd.random() * canvas.height, Rnd.random() * 3 | 0).endFill();
+            }
+
+            stage.addChild(shape, shape2);
+
+            var blurFilter = new createjs.BoxBlurFilter(3, 2, 2);
+            var margins = blurFilter.getBounds();
+
+            t.cache(0, 0, t.getMeasuredWidth() + margins.width, t.getMeasuredLineHeight() + margins.height);
+
+            stage.tick();
+        }
+
+        function createCaptchas() {
+            var rand = Math.random() * 0xffffff | 0;
+            Rnd.setSeed(rand);
+
+            document.getElementById('captcha').src = '/captcha.png?seed=' + rand;
+
+            create();
+        }
+
+        function init() {
+            if (canvas) {
+                document.removeChild(canvas);
+            }
+
+            canvas = document.createElement('canvas');
+            canvas.width = 175;
+            canvas.height = 75;
+
+            var parent = document.getElementById('c');
+            parent.appendChild(canvas);
+
+            ctx = canvas.getContext('2d');
+            stage = new createjs.Stage(canvas);
+
+            createCaptchas();
+        }
+    </script>
+
+</head>
+
+<body onload="init();">
+
+<div style="display: block; width: 400px;">
+    <h3>Video Example</h3>
+    <a href="running.mpg">Play Video (takes a few seconds to create)</a>
+
+    <h3>Captcha Example</h3>
+
+    <div id="c" style="float: left; padding-right: 20px;">
+        <p>EaselJS (client)</p>
+    </div>
+
+    <div id="serverEasel" style="float: left; padding-bottom: 20px;">
+        <p>EaselJS (server)</p>
+        <img id="captcha" alt="captcha">
+    </div>
+
+    <input type="button" value="Random Captcha" onclick="createCaptchas();">
+
+    <h3>Graphics Test</h3>
+    <img src="graphicsTest.png" alt="">
+
+    <h3>SpritesheetBuilder Test</h3>
+    <img src="spritesheetBuilder.png" alt="">
+</div>
+
+</body>
+</html>

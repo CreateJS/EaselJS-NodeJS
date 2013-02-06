@@ -1,0 +1,25 @@
+{
+	"name":"node-easel",
+	"description":"node wrapper for EaselJS, utilizing node-canvas.",
+	"version":"0.1.0",
+	"author":"Wes Gorgichuk <wes@gskinner.com>",
+	"keywords":[
+		"canvas",
+		"graphic",
+		"graphics",
+		"vector",
+		"image",
+		"drawing",
+		"images",
+		"easel"
+	],
+	"homepage":"https://github.com/wdamien/node-easel",
+	"repository":"git://github.com/wdamien/node-easel",
+	"main":"./src/node-easel.js",
+	"dependencies":{
+		"canvas":"1.x"
+	},
+	"engines":{
+		"node":">= 0.8.0 && < 1.0.0"
+	}
+}
