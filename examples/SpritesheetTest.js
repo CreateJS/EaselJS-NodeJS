@@ -89,6 +89,8 @@ p.handleVideoEncoded = function () {
 	var cmd = "find " + __dirname + "/output -name '*.png' -exec rm -f {} \\;";
 	exec(cmd);
 	this.success('video.mpg');
+
+	createjs.Ticker.halt();
 }
 
 p.loadImage = function (name) {

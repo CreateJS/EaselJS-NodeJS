@@ -115,3 +115,21 @@ for (var i = 0; i < classes.length; i++) {
 	var name = path.split('/').pop();
 	require('./' + path + '.js')[name];
 };
+
+/**
+ * Inject custom functionality that is only required on the server.
+ * So we can keep the same EaselJS source desktop / server.
+ *
+ */
+
+/**
+ * Inject a halt method for Ticker.
+ * Clears the Ticker's Timeout, and stops all animation.
+ * Should only be called when your ready to stop the node instance.
+ *
+ */
+createjs.Ticker.halt = function() {
+	if (createjs.Ticker.timeoutID !== null) {
+		clearTimeout(createjs.Ticker.timeoutID);
+	}
+}

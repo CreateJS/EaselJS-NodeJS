@@ -45,9 +45,11 @@ g.setStrokeStyle(8)
 
 //Add the item to our stage, and call .tick(); to draw the object.
 var stage = new createjs.Stage(c);
-stage.addChid(shape);
+stage.addChild(shape);
 stage.tick();
 
-//Create a PNG file
-fs.writeFile(__dirname + '/public/circle.png', c.toBuffer());
+//Create a PNG file.
+fs.writeFile(__dirname + '/public/circle.png', c.toBuffer(), function() {
+	createjs.Ticker.halt();
+});
 ```
