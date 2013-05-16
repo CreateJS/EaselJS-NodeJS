@@ -40,6 +40,14 @@
  *	    	//Tween complete
  *	    }
  *
+ * <strong>Arguments and Scope</strong>
+ * Tween also supports a `call()` with arguments and/or a scope. If no scope is passed, then the function is called
+ * anonymously (normal JavaScript behaviour). The scope is useful for maintaining scope when doing object-oriented
+ * style development.
+ *
+ *      Tween.get(target).to({alpha:0})
+ *          .call(onComplete, [argument1, argument2], this);
+ *
  * <h4>Chainable Tween</h4> 
  * This tween will wait 0.5s, tween the target's alpha property to 0 over 1s, set it's visible to false, then call the
  * <code>onComplete</code> function.
@@ -156,7 +164,7 @@ var p = Tween.prototype;
 	 * @method get
 	 * @static
 	 * @param {Object} target The target object that will have its properties tweened.
-	 * @param {Object} props The configuration properties to apply to this tween instance (ex. <code>{loop:true, paused:true}</code>).
+	 * @param {Object} [props] The configuration properties to apply to this tween instance (ex. <code>{loop:true, paused:true}</code>).
 	 * All properties default to false. Supported props are:<UL>
 	 *    <LI> loop: sets the loop property on this tween.</LI>
 	 *    <LI> useTicks: uses ticks for all durations instead of milliseconds.</LI>
@@ -201,10 +209,11 @@ var p = Tween.prototype;
 	
 	
 	/** 
-	 * Removes all existing tweens for a target. This is called automatically by new tweens if the <code>override</code> prop is true.
+	 * Removes all existing tweens for a target. This is called automatically by new tweens if the <code>override</code>
+	 * property is <code>true</code>.
 	 * @method removeTweens
-	 * @static
 	 * @param {Object} target The target object to remove existing tweens from.
+	 * @static
 	 **/
 	Tween.removeTweens = function(target) {
 		if (!target.tweenjs_count) { return; }
@@ -216,6 +225,22 @@ var p = Tween.prototype;
 			}
 		}
 		target.tweenjs_count = 0;
+	}
+
+	/**
+	 * Remove all tweens. This will stop and clean up all existing tweens.
+	 * @method removeAllTweens
+	 * @static
+	 * @since 0.4.1
+	 */
+	Tween.removeAllTweens = function() {
+		var tweens = Tween._tweens;
+		for (var i= 0, l=tweens.length; i<l; i++) {
+			var tween = tweens[i];
+			tween.paused = true;
+			tween.target.tweenjs_count = 0;
+		}
+		tweens.length = 0;
 	}
 	
 	/** 

@@ -33,13 +33,28 @@ this.createjs = this.createjs||{};
 
 /**
  * Allows you to carry out complex color operations such as modifying saturation, brightness, or inverting. See the
- * {{#crossLink "ColorMatrix"}}{{/crossLink}} for more information on changing colors.
+ * {{#crossLink "ColorMatrix"}}{{/crossLink}} for more information on changing colors. For an easier color transform,
+ * consider the {{#crossLink "ColorTransform"}}{{/crossLink}} filter.
  *
- * See {{#crossLink "Filter"}}{{/crossLink}} for an example of how to apply filters.
+ * <h4>Example</h4>
+ * This example creates a red circle, inverts its hue, and then saturates it to brighten it up.
+ *
+ *      var shape = new createjs.Shape().set({x:100,y:100});
+ *      shape.graphics.beginFill("#ff0000").drawCircle(0,0,50);
+ *
+ *      var matrix = new createjs.ColorMatrix().adjustHue(180).adjustSaturation(100);
+ *      shape.filters = [
+ *          new createjs.ColorMatrixFilter(matrix)
+ *      ];
+ *
+ *      shape.cache(-50, -50, 100, 100);
+ *
+ * See {{#crossLink "Filter"}}{{/crossLink}} for an more information on applying filters.
  * @class ColorMatrixFilter
  * @constructor
  * @extends Filter
- * @param {Array} matrix A 4x5 matrix describing the color operation to perform. See also the ColorMatrix class.
+ * @param {Array} matrix A 4x5 matrix describing the color operation to perform. See also the {{#crossLink "ColorMatrix"}}{{/crossLink}}
+ * class.
  **/
 var ColorMatrixFilter = function(matrix) {
   this.initialize(matrix);
@@ -61,19 +76,6 @@ var p = ColorMatrixFilter.prototype = new createjs.Filter();
 	}
 
 // public methods:
-	/**
-	 * Applies the filter to the specified context.
-	 * @method applyFilter
-	 * @param {CanvasRenderingContext2D} ctx The 2D context to use as the source.
-	 * @param {Number} x The x position to use for the source rect.
-	 * @param {Number} y The y position to use for the source rect.
-	 * @param {Number} width The width to use for the source rect.
-	 * @param {Number} height The height to use for the source rect.
-	 * @param {CanvasRenderingContext2D} targetCtx Optional. The 2D context to draw the result to. Defaults to the context passed to ctx.
-	 * @param {Number} targetX Optional. The x position to draw the result to. Defaults to the value passed to x.
-	 * @param {Number} targetY Optional. The y position to draw the result to. Defaults to the value passed to y.
-	 * @return {Boolean}
-	 **/
 	p.applyFilter = function(ctx, x, y, width, height, targetCtx, targetX, targetY) {
 		targetCtx = targetCtx || ctx;
 		if (targetX == null) { targetX = x; }
@@ -108,15 +110,9 @@ var p = ColorMatrixFilter.prototype = new createjs.Filter();
 		return true;
 	}
 
-	/**
-	 * Returns a string representation of this object.
-	 * @method toString
-	 * @return {String} a string representation of the instance.
-	 **/
 	p.toString = function() {
 		return "[ColorMatrixFilter]";
 	}
-	
 	
 	/**
 	 * Returns a clone of this ColorMatrixFilter instance.
@@ -126,6 +122,7 @@ var p = ColorMatrixFilter.prototype = new createjs.Filter();
 	p.clone = function() {
 		return new ColorMatrixFilter(this.matrix);
 	}
-	
-createjs.ColorMatrixFilter = ColorMatrixFilter;
+
+	createjs.ColorMatrixFilter = ColorMatrixFilter;
+
 }());

@@ -41,9 +41,10 @@ this.createjs = this.createjs||{};
  *
  *      var stage = new createjs.Stage("canvasElementId");
  *      var image = new createjs.Bitmap("imagePath.png");
+ *      stage.addChild(image);
  *      createjs.Ticker.addEventListener("tick", handleTick);
  *      function handleTick(event) {
- *          bitmap.x += 10;
+ *          image.x += 10;
  *          stage.update();
  *      }
  *
@@ -79,9 +80,9 @@ var p = Stage.prototype = new createjs.Container();
 	 */
 
 	/**
-	 * Dispatched when the user releases the mouse button anywhere that the page can detect it (this varies slightly between browsers).
-	 * See the {{#crossLink "MouseEvent"}}{{/crossLink}} class for a listing of event properties.
-	 * @event stagemouseup
+	 * Dispatched when the user presses their left mouse button on the canvas. See the {{#crossLink "MouseEvent"}}{{/crossLink}}
+	 * class for a listing of event properties.
+	 * @event stagemousedown
 	 * @since 0.6.0
 	 */
 
@@ -105,6 +106,13 @@ var p = Stage.prototype = new createjs.Container();
 	/**
 	 * The canvas the stage will render to. Multiple stages can share a single canvas, but you must disable autoClear for all but the
 	 * first stage that will be ticked (or they will clear each other's render).
+	 * 
+	 * When changing the canvas property you must disable the events on the old canvas, and enable events on the
+	 * new canvas or mouse events will not work as expected. For example:
+	 * 
+	 *      myStage.enableDOMEvents(false);
+	 *      myStage.canvas = anotherCanvas;
+	 *      myStage.enableDOMEvents(true);
 	 * @property canvas
 	 * @type HTMLCanvasElement | Object
 	 **/
@@ -385,6 +393,14 @@ var p = Stage.prototype = new createjs.Container();
 	 * Enables or disables the  event listeners that stage adds to DOM elements (window, document and canvas).
 	 * It is good practice to disable events when disposing of a Stage instance, otherwise the stage will
 	 * continue to receive events from the page.
+	 * 
+	 * When changing the canvas property you must disable the events on the old canvas, and enable events on the
+	 * new canvas or mouse events will not work as expected. For example:
+	 * 
+	 *      myStage.enableDOMEvents(false);
+	 *      myStage.canvas = anotherCanvas;
+	 *      myStage.enableDOMEvents(true);
+	 * 
 	 * @method enableDOMEvents
 	 * @param {Boolean} [enable=true] Indicates whether to enable or disable the events. Default is true.
 	 **/
@@ -397,15 +413,14 @@ var p = Stage.prototype = new createjs.Container();
 				o.t.removeEventListener(n, o.f);
 			}
 			this._eventListeners = null;
-		} else if (enable && !ls) {
+		} else if (enable && !ls && this.canvas) {
 			var t = window.addEventListener ? window : document;
 			var _this = this;
 			ls = this._eventListeners = {};
 			ls["mouseup"] = {t:t, f:function(e) { _this._handleMouseUp(e)} };
 			ls["mousemove"] = {t:t, f:function(e) { _this._handleMouseMove(e)} };
 			ls["dblclick"] = {t:t, f:function(e) { _this._handleDoubleClick(e)} };
-			t = this.canvas;
-			if (t) { ls["mousedown"] = {t:t, f:function(e) { _this._handleMouseDown(e)} }; }
+			ls["mousedown"] = {t:this.canvas, f:function(e) { _this._handleMouseDown(e)} };
 			
 			for (n in ls) {
 				o = ls[n];

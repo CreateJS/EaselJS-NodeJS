@@ -32,20 +32,36 @@ this.createjs = this.createjs||{};
 (function() {
 
 /**
- * Applies color transforms.
+ * Applies a color transform to DisplayObjects.
  *
- * See {{#crossLink "Filter"}}{{/crossLink}} for an example of how to apply filters.
+ * <h4>Example</h4>
+ * This example draws a red circle, and then transforms it to Blue. This is accomplished by multiplying all the channels
+ * to 0 (except alpha, which is set to 1), and then adding 255 to the blue channel.
+ *
+ *      var shape = new createjs.Shape().set({x:100,y:100});
+ *      shape.graphics.beginFill("#ff0000").drawCircle(0,0,50);
+ *
+ *      shape.filters = [
+ *          new createjs.ColorFilter(0,0,0,1, 0,0,255,0)
+ *      ];
+ *      shape.cache(-50, -50, 100, 100);
+ *
+ * See {{#crossLink "Filter"}}{{/crossLink}} for an more information on applying filters.
  * @class ColorFilter
  * @constructor
  * @extends Filter
- * @param {Number} redMultiplier
- * @param {Number} greenMultiplier
- * @param {Number} blueMultiplier
- * @param {Number} alphaMultiplier
- * @param {Number} redOffset
- * @param {Number} greenOffset
- * @param {Number} blueOffset
- * @param {Number} alphaOffset
+ * @param {Number} [redMultiplier=1] The amount to multiply against the red channel. This is a range between 0 and 1.
+ * @param {Number} [greenMultiplier=1] The amount to multiply against the green channel. This is a range between 0 and 1.
+ * @param {Number} [blueMultiplier=1] The amount to multiply against the blue channel. This is a range between 0 and 1.
+ * @param {Number} [alphaMultiplier=1] The amount to multiply against the alpha channel. This is a range between 0 and 1.
+ * @param {Number} [redOffset=0] The amount to add to the red channel after it has been multiplied. This is a range
+ * between -255 and 255.
+ * @param {Number} [greenOffset=0] The amount to add to the green channel after it has been multiplied. This is a range
+  * between -255 and 255.
+ * @param {Number} [blueOffset=0] The amount to add to the blue channel after it has been multiplied. This is a range
+  * between -255 and 255.
+ * @param {Number} [alphaOffset=0] The amount to add to the alpha channel after it has been multiplied. This is a range
+  * between -255 and 255.
  **/
 var ColorFilter = function(redMultiplier, greenMultiplier, blueMultiplier, alphaMultiplier, redOffset, greenOffset, blueOffset, alphaOffset) {
   this.initialize(redMultiplier, greenMultiplier, blueMultiplier, alphaMultiplier, redOffset, greenOffset, blueOffset, alphaOffset);
@@ -127,19 +143,6 @@ var p = ColorFilter.prototype = new createjs.Filter();
 	}
 
 // public methods:
-	/**
-	 * Applies the filter to the specified context.
-	 * @method applyFilter
-	 * @param {CanvasRenderingContext2D} ctx The 2D context to use as the source.
-	 * @param {Number} x The x position to use for the source rect.
-	 * @param {Number} y The y position to use for the source rect.
-	 * @param {Number} width The width to use for the source rect.
-	 * @param {Number} height The height to use for the source rect.
-	 * @param {CanvasRenderingContext2D} targetCtx Optional. The 2D context to draw the result to. Defaults to the context passed to ctx.
-	 * @param {Number} targetX Optional. The x position to draw the result to. Defaults to the value passed to x.
-	 * @param {Number} targetY Optional. The y position to draw the result to. Defaults to the value passed to y.
-	 * @return {Boolean}
-	 **/
 	p.applyFilter = function(ctx, x, y, width, height, targetCtx, targetX, targetY) {
 		targetCtx = targetCtx || ctx;
 		if (targetX == null) { targetX = x; }
@@ -163,15 +166,9 @@ var p = ColorFilter.prototype = new createjs.Filter();
 		return true;
 	}
 
-	/**
-	 * Returns a string representation of this object.
-	 * @method toString
-	 * @return {String} a string representation of the instance.
-	 **/
 	p.toString = function() {
 		return "[ColorFilter]";
 	}
-
 
 	/**
 	 * Returns a clone of this ColorFilter instance.
@@ -182,5 +179,6 @@ var p = ColorFilter.prototype = new createjs.Filter();
 		return new ColorFilter(this.redMultiplier, this.greenMultiplier, this.blueMultiplier, this.alphaMultiplier, this.redOffset, this.greenOffset, this.blueOffset, this.alphaOffset);
 	}
 
-createjs.ColorFilter = ColorFilter;
+	createjs.ColorFilter = ColorFilter;
+
 }());
