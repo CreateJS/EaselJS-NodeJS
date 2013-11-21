@@ -3,7 +3,7 @@
 * Visit http://createjs.com/ for documentation, updates and examples.
 *
 * Copyright (c) 2010 gskinner.com, inc.
-* 
+*
 * Permission is hereby granted, free of charge, to any person
 * obtaining a copy of this software and associated documentation
 * files (the "Software"), to deal in the Software without
@@ -12,10 +12,10 @@
 * copies of the Software, and to permit persons to whom the
 * Software is furnished to do so, subject to the following
 * conditions:
-* 
+*
 * The above copyright notice and this permission notice shall be
 * included in all copies or substantial portions of the Software.
-* 
+*
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -26,10 +26,15 @@
 * OTHER DEALINGS IN THE SOFTWARE.
 */
 
+/**
+ * @module EaselJS
+ */
+
 // namespace:
 this.createjs = this.createjs||{};
 
 (function() {
+	"use strict";
 /**
  * Encapsulates the properties and methods associated with a sprite sheet. A sprite sheet is a series of images (usually
  * animation frames) combined into a larger image (or images). For example, an animation consisting of eight 100x100
@@ -47,6 +52,10 @@ this.createjs = this.createjs||{};
  * <h4>SpriteSheet Format</h4>
  *
  *      data = {
+ *          // DEFINING FRAMERATE:
+ *          // this specifies the framerate that will be set on the SpriteSheet. See Spritesheet.framerate
+ *          // for more information.
+ *          framerate: 20,
  *
  *          // DEFINING IMAGES:
  *          // list of images or image URIs to use. SpriteSheet can handle preloading.
@@ -69,14 +78,12 @@ this.createjs = this.createjs||{};
  *
  *          // DEFINING ANIMATIONS:
  *
- * 	        // simple animation definitions. Define a consecutive range of frames.
- * 	        // also optionally define a "next" animation name for sequencing.
- * 	        // setting next to false makes it pause when it reaches the end.
+ * 	        // simple animation definitions. Define a consecutive range of frames (begin to end inclusive).
+ * 	        // optionally define a "next" animation to sequence to (or false to stop) and a playback "speed"
  * 	        animations: {
- * 	        	// start, end, next, frequency
+ * 	        	// start, end, next, speed
  * 	        	run: [0,8],
- * 	        	jump: [9,12,"run",2],
- * 	        	stand: 13
+ * 	        	jump: [9,12,"run",2]
  * 	        }
  *
  *          // the complex approach which specifies every frame in the animation by index.
@@ -87,7 +94,7 @@ this.createjs = this.createjs||{};
  *          	jump: {
  *          		frames: [1,4,5,6,1],
  *          		next: "run",
- *          		frequency: 2
+ *          		speed: 2
  *          	},
  *          	stand: { frames: [7] }
  *          }
@@ -98,7 +105,7 @@ this.createjs = this.createjs||{};
  * 	        	jump: {
  * 	        		frames: [8,9,10,9,8],
  * 	        		next: "run",
- * 	        		frequency: 2
+ * 	        		speed: 2
  * 	        	},
  * 	        	stand: 7
  * 	        }
@@ -114,28 +121,27 @@ this.createjs = this.createjs||{};
  *          animations: {run:[0,4], jump:[5,8,"run"]}
  *      };
  *      var spriteSheet = new createjs.SpriteSheet(data);
- *      var animation = new createjs.BitmapAnimation(spriteSheet);
- *      animation.gotoAndPlay("run");
+ *      var animation = new createjs.Sprite(spriteSheet, "run");
  *
  * @class SpriteSheet
  * @constructor
- * @param data
- * @uses EventDispatcher
+ * @param {Object} data An object describing the SpriteSheet data.
+ * @extends EventDispatcher
  **/
 var SpriteSheet = function(data) {
   this.initialize(data);
-}
-var p = SpriteSheet.prototype;
+};
+var p = SpriteSheet.prototype = new createjs.EventDispatcher();
 
 // events:
 
 	/**
 	 * Dispatched when all images are loaded.  Note that this only fires if the images
-	 * were not fully loaded when the sprite sheet was initialized. You should check the complete property 
+	 * were not fully loaded when the sprite sheet was initialized. You should check the complete property
 	 * to prior to adding a listener. Ex.
 	 * <pre><code>var sheet = new SpriteSheet(data);
 	 * if (!sheet.complete) {
-	 *  &nbsp; // not preloaded, listen for onComplete:
+	 *  &nbsp; // not preloaded, listen for the complete event:
 	 *  &nbsp; sheet.addEventListener("complete", handler);
 	 * }</code></pre>
 	 * @event complete
@@ -146,37 +152,30 @@ var p = SpriteSheet.prototype;
 
 // public properties:
 	/**
-	 * Read-only property indicating whether all images are finished loading.
+	 * Indicates whether all images are finished loading.
 	 * @property complete
 	 * @type Boolean
+	 * @readonly
 	 **/
 	p.complete = true;
-	
-	
+
+
 	/**
-	 * The onComplete callback is called when all images are loaded. Note that this only fires if the images
-	 * were not fully loaded when the sprite sheet was initialized. You should check the complete property 
-	 * to prior to adding an onComplete handler. Ex.
-	 * <pre><code>var sheet = new SpriteSheet(data);
-	 * if (!sheet.complete) {
-	 *  &nbsp; // not preloaded, listen for onComplete:
-	 *  &nbsp; sheet.onComplete = handler;
-	 * }</code></pre>
+	 * Specifies the framerate to use by default for Sprite instances using the SpriteSheet. See
+	 * Sprite.framerate for more information.
+	 * @property framerate
+	 * @type Number
+	 **/
+	p.framerate = 0;
+
+	// TODO: deprecated.
+	/**
+	 * REMOVED. Use {{#crossLink "EventDispatcher/addEventListener"}}{{/crossLink}} and the {{#crossLink "SpriteSheet/complete:event"}}{{/crossLink}}
+	 * event.
 	 * @property onComplete
 	 * @type Function
-	 * @deprecated In favour of the "complete" event. Will be removed in a future version.
+	 * @deprecated Use addEventListener and the "complete" event.
 	 **/
-	p.onComplete = null;
-
-// mix-ins:
-	// EventDispatcher methods:
-	p.addEventListener = null;
-	p.removeEventListener = null;
-	p.removeAllEventListeners = null;
-	p.dispatchEvent = null;
-	p.hasEventListener = null;
-	p._listeners = null;
-	createjs.EventDispatcher.initialize(p); // inject EventDispatcher methods.
 
 // private properties:
 	/**
@@ -184,56 +183,56 @@ var p = SpriteSheet.prototype;
 	 * @protected
 	 **/
 	p._animations = null;
-	
+
 	/**
 	 * @property _frames
 	 * @protected
 	 **/
 	p._frames = null;
-	
+
 	/**
 	 * @property _images
 	 * @protected
 	 **/
 	p._images = null;
-	
+
 	/**
 	 * @property _data
 	 * @protected
 	 **/
 	p._data = null;
-	
+
 	/**
 	 * @property _loadCount
 	 * @protected
 	 **/
 	p._loadCount = 0;
-	
+
 	// only used for simple frame defs:
 	/**
 	 * @property _frameHeight
 	 * @protected
 	 **/
 	p._frameHeight = 0;
-	
+
 	/**
 	 * @property _frameWidth
 	 * @protected
 	 **/
 	p._frameWidth = 0;
-	
+
 	/**
 	 * @property _numFrames
 	 * @protected
 	 **/
 	p._numFrames = 0;
-	
+
 	/**
 	 * @property _regX
 	 * @protected
 	 **/
 	p._regX = 0;
-	
+
 	/**
 	 * @property _regY
 	 * @protected
@@ -243,12 +242,15 @@ var p = SpriteSheet.prototype;
 // constructor:
 	/**
 	 * @method initialize
+	 * @param {Object} data An object describing the SpriteSheet data.
 	 * @protected
 	 **/
 	p.initialize = function(data) {
 		var i,l,o,a;
 		if (data == null) { return; }
-		
+
+		this.framerate = data.framerate||0;
+
 		// parse images:
 		if (data.images && (l=data.images.length) > 0) {
 			a = this._images = [];
@@ -267,7 +269,7 @@ var p = SpriteSheet.prototype;
 				}
 			}
 		}
-		
+
 		// parse frames:
 		if (data.frames == null) { // nothing
 		} else if (data.frames instanceof Array) {
@@ -288,8 +290,8 @@ var p = SpriteSheet.prototype;
 		}
 		
 		// parse animations:
+		this._animations = [];
 		if ((o=data.animations) != null) {
-			this._animations = [];
 			this._data = {};
 			var name;
 			for (name in o) {
@@ -300,7 +302,7 @@ var p = SpriteSheet.prototype;
 				} else if (obj instanceof Array) { // simple
 					if (obj.length == 1) { anim.frames = [obj[0]]; }
 					else {
-						anim.frequency = obj[3];
+						anim.speed = obj[3];
 						anim.next = obj[2];
 						a = anim.frames = [];
 						for (i=obj[0];i<=obj[1];i++) {
@@ -308,19 +310,20 @@ var p = SpriteSheet.prototype;
 						}
 					}
 				} else { // complex
-					anim.frequency = obj.frequency;
+					anim.speed = obj.speed;
 					anim.next = obj.next;
 					var frames = obj.frames;
 					a = anim.frames = (typeof frames == "number") ? [frames] : frames.slice(0);
 				}
-				anim.next = (a.length < 2 || anim.next == false) ? null : (anim.next == null || anim.next == true) ? name : anim.next;
-				if (!anim.frequency) { anim.frequency = 1; }
+				if (anim.next === true || anim.next === undefined) { anim.next = name; } // loop
+				if (anim.next === false || (a.length < 2 && anim.next == name)) { anim.next = null; } // stop
+				if (!anim.speed) { anim.speed = 1; }
 				this._animations.push(name);
 				this._data[name] = anim;
 			}
 		}
-		
-	}
+
+	};
 
 // public methods:
 	/**
@@ -338,8 +341,8 @@ var p = SpriteSheet.prototype;
 			if (data == null) { return 0; }
 			else { return data.frames.length; }
 		}
-	}
-	
+	};
+
 	/**
 	 * Returns an array of all available animation names as strings.
 	 * @method getAnimations
@@ -347,49 +350,56 @@ var p = SpriteSheet.prototype;
 	 **/
 	p.getAnimations = function() {
 		return this._animations.slice(0);
-	}
-	
+	};
+
 	/**
-	 * Returns an object defining the specified animation. The returned object has a
-	 * frames property containing an array of the frame id's in the animation, a frequency
-	 * property indicating the advance frequency for this animation, a name property, 
-	 * and a next property, which specifies the default next animation. If the animation
-	 * loops, the name and next property will be the same.
+	 * Returns an object defining the specified animation. The returned object contains:<UL>
+	 *     <LI>frames: an array of the frame ids in the animation</LI>
+	 *     <LI>speed: the playback speed for this animation</LI>
+	 *     <LI>name: the name of the animation</LI>
+	 *     <LI>next: the default animation to play next. If the animation loops, the name and next property will be the
+	 *     same.</LI>
+	 * </UL>
 	 * @method getAnimation
 	 * @param {String} name The name of the animation to get.
-	 * @return {Object} a generic object with frames, frequency, name, and next properties.
+	 * @return {Object} a generic object with frames, speed, name, and next properties.
 	 **/
 	p.getAnimation = function(name) {
 		return this._data[name];
-	}
-	
+	};
+
 	/**
-	 * Returns an object specifying the image and source rect of the specified frame. The returned object
-	 * has an image property holding a reference to the image object in which the frame is found,
-	 * and a rect property containing a Rectangle instance which defines the boundaries for the
-	 * frame within that image.
+	 * Returns an object specifying the image and source rect of the specified frame. The returned object has:<UL>
+	 *     <LI>an image property holding a reference to the image object in which the frame is found</LI>
+	 *     <LI>a rect property containing a Rectangle instance which defines the boundaries for the frame within that
+	 *     image.</LI>
+	 * </UL>
 	 * @method getFrame
 	 * @param {Number} frameIndex The index of the frame.
-	 * @return {Object} a generic object with image and rect properties. Returns null if the frame does not exist, or the image is not fully loaded.
+	 * @return {Object} a generic object with image and rect properties. Returns null if the frame does not exist.
 	 **/
 	p.getFrame = function(frameIndex) {
 		var frame;
-		if (this.complete && this._frames && (frame=this._frames[frameIndex])) { return frame; }
+		if (this._frames && (frame=this._frames[frameIndex])) { return frame; }
 		return null;
 	};
-	
+
 	/**
-	 * Returns a Rectangle instance defining the bounds of the specified frame relative to the origin. For example, a
-	 * 90 x 70 frame with a regX of 50 and a regY of 40 would return a rectangle with [x=-50, y=-40, width=90, height=70].
+	 * Returns a {{#crossLink "Rectangle"}}{{/crossLink}} instance defining the bounds of the specified frame relative
+	 * to the origin. For example, a 90 x 70 frame with a regX of 50 and a regY of 40 would return:
+	 *
+	 *      [x=-50, y=-40, width=90, height=70]
+	 *
 	 * @method getFrameBounds
 	 * @param {Number} frameIndex The index of the frame.
+	 * @param {Rectangle} [rectangle] A Rectangle instance to copy the values into. By default a new instance is created.
 	 * @return {Rectangle} A Rectangle instance. Returns null if the frame does not exist, or the image is not fully loaded.
 	 **/
-	p.getFrameBounds = function(frameIndex) {
+	p.getFrameBounds = function(frameIndex, rectangle) {
 		var frame = this.getFrame(frameIndex);
-		return frame ? new createjs.Rectangle(-frame.regX, -frame.regY, frame.rect.width, frame.rect.height) : null;
+		return frame ? (rectangle||new createjs.Rectangle()).initialize(-frame.regX, -frame.regY, frame.rect.width, frame.rect.height) : null;
 	};
-	
+
 	/**
 	 * Returns a string representation of this object.
 	 * @method toString
@@ -397,7 +407,7 @@ var p = SpriteSheet.prototype;
 	 **/
 	p.toString = function() {
 		return "[SpriteSheet]";
-	}
+	};
 
 	/**
 	 * Returns a clone of the SpriteSheet instance.
@@ -417,8 +427,8 @@ var p = SpriteSheet.prototype;
 		o._numFrames = this._numFrames;
 		o._loadCount = this._loadCount;
 		return o;
-	}
-	
+	};
+
 // private methods:
 	/**
 	 * @method _handleImageLoad
@@ -428,11 +438,10 @@ var p = SpriteSheet.prototype;
 		if (--this._loadCount == 0) {
 			this._calculateFrames();
 			this.complete = true;
-			this.onComplete&&this.onComplete();
 			this.dispatchEvent("complete");
 		}
-	}
-	
+	};
+
 	/**
 	 * @method _calculateFrames
 	 * @protected
@@ -454,7 +463,7 @@ var p = SpriteSheet.prototype;
 			ttlFrames += ttl;
 		}
 		this._numFrames = ttlFrames;
-	}
+	};
 
 createjs.SpriteSheet = SpriteSheet;
 }());

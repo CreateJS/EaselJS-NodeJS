@@ -150,7 +150,7 @@ p.createColorImage = function () {
 }
 
 p.createBlurImage = function () {
-	var blurFilter = new createjs.BoxBlurFilter(5, 2, 2);
+	var blurFilter = new createjs.BlurFilter(5, 2, 2);
 	var bitmap = this.createBitmap(this.img, [blurFilter]);
 	var container = this.createTile();
 	container.addChild(bitmap);

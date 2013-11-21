@@ -100,14 +100,14 @@ p.init = function (seed) {
 
 	stage.addChild(shape, shape2);
 
-	var blurFilter = new createjs.BoxBlurFilter(3, 2, 2);
+	var blurFilter = new createjs.BlurFilter(3, 2, 2);
 	var margins = blurFilter.getBounds();
 	t.cache(0,
 			0,
 			t.getMeasuredWidth() + margins.width,
 			t.getMeasuredLineHeight() + margins.height);
 
-	stage.tick();
+	stage.update();
 
 	return {buffer:c,
 		term:usedCharacters.join('')};

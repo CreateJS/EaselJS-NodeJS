@@ -34,7 +34,7 @@ p.init = function () {
 	var img = spriteSheet._images[0];
 
 	stage.addChild(new createjs.Bitmap(img));
-	stage.tick();
+	stage.update();
 
 	return {buffer:canvas};
 }

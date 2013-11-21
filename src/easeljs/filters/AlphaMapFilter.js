@@ -26,11 +26,15 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @module EaselJS
+ */
+
 // namespace:
 this.createjs = this.createjs || {};
 
 (function () {
-
+	"use strict";
 	/**
 	 * Applies a greyscale alpha map image (or canvas) to the target, such that the alpha channel of the result will
 	 * be copied from the red channel of the map, and the RGB channels will be copied from the target.
@@ -62,14 +66,14 @@ this.createjs = this.createjs || {};
 	 **/
 	var AlphaMapFilter = function (alphaMap) {
 		this.initialize(alphaMap);
-	}
+	};
 	var p = AlphaMapFilter.prototype = new createjs.Filter();
 
 // constructor:
 	/** @ignore */
 	p.initialize = function (alphaMap) {
 		this.alphaMap = alphaMap;
-	}
+	};
 
 // public properties:
 
@@ -117,19 +121,19 @@ this.createjs = this.createjs || {};
 		imageData.data = data;
 		targetCtx.putImageData(imageData, targetX, targetY);
 		return true;
-	}
+	};
 
 	/**
 	 * Returns a clone of this object.
 	 * @return {AlphaMapFilter} A clone of the current AlphaMapFilter instance.
 	 **/
 	p.clone = function () {
-		return new AlphaMapFilter(this.mask);
-	}
+		return new AlphaMapFilter(this.alphaMap);
+	};
 
 	p.toString = function () {
 		return "[AlphaMapFilter]";
-	}
+	};
 
 // private methods:
 	p._prepAlphaMap = function () {
@@ -143,6 +147,7 @@ this.createjs = this.createjs || {};
 		this._mapData = null;
 		var map = this._alphaMap = this.alphaMap;
 		var canvas = map;
+		var ctx;
 		if (map instanceof HTMLCanvasElement) {
 			ctx = canvas.getContext("2d");
 		} else {
@@ -161,7 +166,7 @@ this.createjs = this.createjs || {};
 		}
 		this._mapData = imgData.data;
 		return true;
-	}
+	};
 
 	createjs.AlphaMapFilter = AlphaMapFilter;
 

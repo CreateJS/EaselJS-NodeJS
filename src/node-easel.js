@@ -70,7 +70,9 @@ createjs = {
 
 var classes = [
 	// Shared
-	'easeljs/events/EventDispatcher',
+	'createjs/events/EventDispatcher',
+	'createjs/events/Event',
+	'createjs/utils/IndexOf',
 
 	// TweenJS code (used by MovieClip)
 	'tweenjs/CSSPlugin',
@@ -85,6 +87,7 @@ var classes = [
 	'easeljs/utils/SpriteSheetBuilder',
 	'easeljs/utils/SpriteSheetUtils',
 	'easeljs/utils/Ticker',
+	'easeljs/events/MouseEvent',
 	'easeljs/geom/Matrix2D',
 	'easeljs/geom/Rectangle',
 	'easeljs/geom/Point',
@@ -94,15 +97,17 @@ var classes = [
 	'easeljs/display/Shadow',
 	'easeljs/display/Shape',
 	'easeljs/display/SpriteSheet',
+	'easeljs/display/Sprite',
 	'easeljs/display/Text',
 	'easeljs/display/Bitmap',
+	'easeljs/display/BitmapText',
 	'easeljs/display/BitmapAnimation',
 	'easeljs/display/Graphics',
 	'easeljs/display/MovieClip',
 	'easeljs/filters/Filter',
 	'easeljs/filters/AlphaMapFilter',
 	'easeljs/filters/AlphaMaskFilter',
-	'easeljs/filters/BoxBlurFilter',
+	'easeljs/filters/BlurFilter',
 	'easeljs/filters/ColorFilter',
 	'easeljs/filters/ColorMatrix',
 	'easeljs/filters/ColorMatrixFilter',
