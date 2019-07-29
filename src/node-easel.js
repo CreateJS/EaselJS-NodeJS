@@ -36,7 +36,10 @@ Canvas.prototype.addEventListener = function () { };
  *
  * @type {Object}
  */
-window = { addEventListener:function () { } };
+window = { 
+	addEventListener:function () { },
+	performance: {}
+};
 
 /**
  * node-canvas doesn't support cloneNode();
@@ -67,58 +70,8 @@ createjs = {
 	}
 };
 
-var classes = [
-	// Shared
-	'createjs/events/EventDispatcher',
-	'createjs/events/Event',
-	'createjs/utils/IndexOf',
-
-	// TweenJS code (used by MovieClip)
-	'tweenjs/CSSPlugin',
-	'tweenjs/Ease',
-	'tweenjs/MotionGuidePlugin',
-	'tweenjs/Timeline',
-	'tweenjs/Tween',
-	'tweenjs/version',
-
-	// EaselJS code
-	'easeljs/utils/UID',
-	'easeljs/utils/SpriteSheetBuilder',
-	'easeljs/utils/SpriteSheetUtils',
-	'easeljs/utils/Ticker',
-	'easeljs/events/MouseEvent',
-	'easeljs/geom/Matrix2D',
-	'easeljs/geom/Rectangle',
-	'easeljs/geom/Point',
-	'easeljs/display/DisplayObject',
-	'easeljs/display/Container',
-	'easeljs/display/Stage',
-	'easeljs/display/Shadow',
-	'easeljs/display/Shape',
-	'easeljs/display/SpriteSheet',
-	'easeljs/display/Sprite',
-	'easeljs/display/Text',
-	'easeljs/display/Bitmap',
-	'easeljs/display/BitmapText',
-	'easeljs/display/BitmapAnimation',
-	'easeljs/display/Graphics',
-	'easeljs/display/MovieClip',
-	'easeljs/filters/Filter',
-	'easeljs/filters/AlphaMapFilter',
-	'easeljs/filters/AlphaMaskFilter',
-	'easeljs/filters/BlurFilter',
-	'easeljs/filters/ColorFilter',
-	'easeljs/filters/ColorMatrix',
-	'easeljs/filters/ColorMatrixFilter',
-	'easeljs/version',
-	'easeljs/version_movieclip'
-];
-
-for (var i = 0; i < classes.length; i++) {
-	var path = classes[i];
-	var name = path.split('/').pop();
-	require('./' + path + '.js')[name];
-};
+require('easeljs/lib/easeljs.js');
+require('tweenjs/lib/tweenjs.js');
 
 /**
  * Inject custom functionality that is only required on the server.

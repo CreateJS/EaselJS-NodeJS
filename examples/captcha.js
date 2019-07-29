@@ -73,7 +73,6 @@ p.init = function (seed) {
 	}
 
 	var g = new createjs.Graphics();
-	g.initialize(ctx);
 
 	var shape = new createjs.Shape(g);
 	g.setStrokeStyle(1).beginStroke("#00acc");
@@ -85,7 +84,6 @@ p.init = function (seed) {
 	}
 
 	var g2 = new createjs.Graphics();
-	g2.initialize(ctx);
 
 	var shape2 = new createjs.Shape(g2);
 	length = 40;

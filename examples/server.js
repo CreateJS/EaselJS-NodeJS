@@ -2,6 +2,7 @@ var express = require('express')
 var app = express();
 var fs = require('fs');
 var exec = require('child_process').exec;
+const { getInstalledPathSync } = require('get-installed-path');
 
 var captcha = require('./captcha.js').Captcha;
 var graphicsTest = require('./GraphicsTest.js').GraphicsTest;
@@ -60,6 +61,11 @@ function sendImage(buffer, res) {
 
 app.get('/', function (req, res) {
 	res.sendfile(__dirname + '/public/index.html');
+});
+
+let easelpath = getInstalledPathSync('easeljs', { local: true }) + '/lib/easeljs.js';
+app.get('/easeljs.js', function (req, res) {
+	res.sendfile(easelpath);
 });
 
 app.listen(9000);

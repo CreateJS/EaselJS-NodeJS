@@ -13,6 +13,7 @@
 	],
 	"dependencies": {
 		"easeljs": "^1.0.2",
-		"express": "3.x"
+		"express": "3.x",
+		"get-installed-path": "^4.0.8"
 	}
 }
