@@ -1,6 +1,6 @@
 {
 	"name": "node-easel",
-	"description": "node wrapper for EaselJS, utilizing node-canvas.",
+	"description": "Node wrapper for EaselJS, utilizing the `canvas` package.",
 	"version": "1.0.0",
 	"author": "Wes Gorgichuk <wes@gskinner.com>",
 	"keywords": [
@@ -13,8 +13,8 @@
 		"images",
 		"easel"
 	],
-	"homepage": "https://github.com/wdamien/node-easel",
-	"repository": "git://github.com/wdamien/node-easel",
+	"homepage": "https://github.com/CreateJS/EaselJS-NodeJS",
+	"repository": "git://github.com/CreateJS/EaselJS-NodeJS",
 	"main": "./src/node-easel.js",
 	"dependencies": {
 		"canvas": "^2",
