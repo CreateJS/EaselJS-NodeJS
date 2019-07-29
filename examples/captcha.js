@@ -23,8 +23,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 var fs = require('fs');
-var Canvas = require('canvas');
-var Image = Canvas.Image;
+var { Canvas, Image } = require('canvas');
 var Rnd = require('./public/com/gskinner/utils/Rnd.js').Rnd;
 
 require('../src/node-easel.js');

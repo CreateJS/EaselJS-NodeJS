@@ -1,5 +1,4 @@
-var Canvas = require('canvas');
-var Image = Canvas.Image;
+var { Canvas, Image } = require('canvas');
 var fs = require('fs');
 var exec = require('child_process').exec;
 

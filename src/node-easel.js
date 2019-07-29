@@ -22,8 +22,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-var Canvas = require('canvas');
-var Image = Canvas.Image;
+let { Image, Canvas } = require('canvas');
 
 /**
  * Surpress addEventListener errors on easel.
