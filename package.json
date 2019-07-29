@@ -17,6 +17,8 @@
 	"repository": "git://github.com/wdamien/node-easel",
 	"main": "./src/node-easel.js",
 	"dependencies": {
-		"canvas": "^2"
+		"canvas": "^2",
+		"easeljs": "^1.0.2",
+		"tweenjs": "^1.0.2"
 	}
 }

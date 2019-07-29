@@ -12,6 +12,7 @@
 		"easel"
 	],
 	"dependencies": {
+		"easeljs": "^1.0.2",
 		"express": "3.x"
 	}
 }
