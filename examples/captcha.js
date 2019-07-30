@@ -23,8 +23,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 var fs = require('fs');
-var Canvas = require('canvas');
-var Image = Canvas.Image;
+var { Canvas, Image } = require('canvas');
 var Rnd = require('./public/com/gskinner/utils/Rnd.js').Rnd;
 
 require('../src/node-easel.js');
@@ -74,7 +73,6 @@ p.init = function (seed) {
 	}
 
 	var g = new createjs.Graphics();
-	g.initialize(ctx);
 
 	var shape = new createjs.Shape(g);
 	g.setStrokeStyle(1).beginStroke("#00acc");
@@ -86,7 +84,6 @@ p.init = function (seed) {
 	}
 
 	var g2 = new createjs.Graphics();
-	g2.initialize(ctx);
 
 	var shape2 = new createjs.Shape(g2);
 	length = 40;

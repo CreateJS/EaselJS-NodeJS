@@ -1,5 +1,4 @@
-var Canvas = require('canvas');
-var Image = Canvas.Image;
+var { Canvas, Image } = require('canvas');
 var fs = require('fs');
 var exec = require('child_process').exec;
 
@@ -18,7 +17,7 @@ s.RUNNING_RATE = 2.5;
 p.init = function (success) {
 	var cmd = "find " + __dirname + "/output -name '*.mpg' -exec rm -f {} \\;";
 	console.log(cmd);
-	exec(cmd);
+	exec(cmd, execCallback);
 
 	this.success = success;
 
@@ -30,7 +29,7 @@ p.init = function (success) {
 	var spriteSheet = {"animations":{"run":[0, 25], "jump":[26, 63]}, "images":[this.loadImage("runningGrant.png")], "frames":{"regX":0, "height":292.5, "count":64, "regY":0, "width":165.75}};
 
 	var ss = new createjs.SpriteSheet(spriteSheet);
-	this.grant = new createjs.BitmapAnimation(ss);
+	this.grant = new createjs.Sprite(ss);
 
 	// Set up looping
 	ss.getAnimation("run").next = "run";
@@ -68,7 +67,7 @@ p.init = function (success) {
 
 	this.tickFunction = this.tick.bind(this);
 	var fps = 80;
-	createjs.Ticker.setFPS(fps);
+	createjs.Ticker.framerate = fps;
 	createjs.Ticker.addEventListener("tick", this.tickFunction);
 
 	var seconds = 10;
@@ -80,14 +79,19 @@ p.init = function (success) {
 p.stopCapture = function () {
 	createjs.Ticker.removeEventListener("tick", this.tickFunction);
 	console.log('begin video encoding');
-	exec('cd ' + __dirname + '/output && ffmpeg -f image2 -i test_%d.png -sameq video.mpg', this.handleVideoEncoded.bind(this));
+	var cmd = 'cd ' + __dirname + '/output && ffmpeg -f image2 -i test_%d.png -qscale 0 video.mpg';
+	exec(cmd, this.handleVideoEncoded.bind(this));
 }
 
-p.handleVideoEncoded = function () {
-	console.log('Video Encoded');
+p.handleVideoEncoded = function (err, stdout, stderr) {
+	if (err) {
+		execCallback(err, stdout, stderr);
+	} else {
+		console.log('Video Encoded');
+	}
 
 	var cmd = "find " + __dirname + "/output -name '*.png' -exec rm -f {} \\;";
-	exec(cmd);
+	exec(cmd, execCallback);
 	this.success('video.mpg');
 
 	createjs.Ticker.halt();
@@ -123,3 +127,19 @@ p.tick = function () {
 	var fileName = __dirname + '/output/test_' + (this.index++) + '.png';
 	fs.writeFileSync(fileName, this.canvas.toBuffer(), '');
 }
+
+/**
+ * Helper for reporting back exec errors
+ */
+function execCallback(error, stdout, stderr) {
+	if (error) {
+		console.error("exec error:" + error);
+		return;
+	}
+	if (stdout) {
+		console.log("stdout:" + stdout);
+	}
+	if (stderr) {
+		console.log("stderr:" + stderr);
+	}
+};

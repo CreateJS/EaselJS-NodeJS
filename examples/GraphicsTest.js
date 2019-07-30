@@ -1,6 +1,5 @@
 var fs = require('fs');
-var Canvas = require('canvas');
-var Image = Canvas.Image;
+var { Canvas, Image } = require('canvas');
 
 require('../src/node-easel.js');
 
